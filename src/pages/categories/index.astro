@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import { CATEGORIES } from '../../content/categories';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+
+const categoriesWithCount = CATEGORIES.map(cat => ({
+  ...cat,
+  count: allPosts.filter(p => p.data.category === cat.slug).length,
+}));
+---
+
+<BaseLayout title="Categories — Shivam Jari" description="Browse posts by category.">
+  <div class="mx-auto max-w-[68ch] px-6 py-16">
+
+    <header class="mb-12">
+      <a href="/" class="font-sans text-sm text-neutral-400 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors">← Home</a>
+      <h1 class="mt-4 font-sans text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+        Categories
+      </h1>
+    </header>
+
+    <ul class="space-y-8">
+      {categoriesWithCount.map(cat => (
+        <li>
+          <a href={`/categories/${cat.slug}`} class="group block">
+            <div class="flex items-baseline justify-between gap-4">
+              <h2 class="font-sans text-lg font-semibold text-neutral-900 dark:text-neutral-100 group-hover:text-terracotta-600 dark:group-hover:text-terracotta-400 transition-colors duration-150">
+                {cat.name}
+              </h2>
+              <span class="shrink-0 font-sans text-sm text-neutral-400 dark:text-neutral-500">
+                {cat.count} {cat.count === 1 ? 'post' : 'posts'}
+              </span>
+            </div>
+            <p class="mt-1 font-serif text-[0.9375rem] leading-relaxed text-neutral-500 dark:text-neutral-400">
+              {cat.description}
+            </p>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+  </div>
+</BaseLayout>

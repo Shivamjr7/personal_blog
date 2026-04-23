@@ -123,10 +123,10 @@ Aesthetic target: **editorial-minimal** — think Maggie Appleton or Lee Robinso
 - No emoji in UI chrome
 - Subtle animations only (fade-in on scroll is fine, bounce is not)
 
-Typography proposal (confirm at Slice 3):
-- **Body:** a readable serif — Source Serif 4, Charter, or iA Writer Quattro
-- **UI/nav:** Inter or Geist Sans
-- **Code:** JetBrains Mono or Geist Mono
+Typography (locked at Slice 3):
+- **Body:** Source Serif 4 Variable (`@fontsource-variable/source-serif-4`) — open license, self-hosted via fontsource
+- **UI/nav:** Inter Variable (`@fontsource-variable/inter`)
+- **Code:** JetBrains Mono Variable (`@fontsource-variable/jetbrains-mono`)
 
 Color: neutral grayscale base + one accent (leaning warm — terracotta, ochre, or a deep blue). Finalize when the first post is rendering.
 

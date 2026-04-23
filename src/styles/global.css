@@ -1,18 +1,21 @@
 @import "@fontsource-variable/inter";
+@import "@fontsource-variable/source-serif-4";
 @import "@fontsource-variable/jetbrains-mono";
 
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Dark mode: .dark class on <html>, toggled by ThemeToggle */
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Fonts */
-  --font-sans: "Inter Variable", Inter, system-ui, sans-serif;
-  /* Charter is a macOS system font; woff2 for production goes in /public/fonts/ */
-  --font-serif: Charter, "Bitstream Charter", Georgia, serif;
-  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", "Fira Code", monospace;
+  --font-sans:  "Inter Variable", Inter, system-ui, sans-serif;
+  --font-serif: "Source Serif 4 Variable", "Source Serif 4", Georgia, serif;
+  --font-mono:  "JetBrains Mono Variable", "JetBrains Mono", "Fira Code", monospace;
 
-  /* Terracotta accent scale — use sparingly (links, active nav, occasional accents) */
-  --color-terracotta-50: #fdf3f0;
+  /* Terracotta accent — #B8543A as 500, full 50–950 scale */
+  --color-terracotta-50:  #fdf3f0;
   --color-terracotta-100: #fadfd7;
   --color-terracotta-200: #f3bcad;
   --color-terracotta-300: #e8977f;

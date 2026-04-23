@@ -1,0 +1,47 @@
+---
+title: "Notes on consistency models"
+description: "A running collection of notes on linearizability, sequential consistency, and causal consistency — and the practical tradeoffs between them."
+publishedAt: 2026-04-20
+category: "systems"
+tags: ["distributed-systems", "consistency", "databases"]
+draft: false
+---
+
+Consistency models define the rules a distributed system promises to follow when multiple processes read and write shared data. They're a spectrum: the stronger the guarantee, the more coordination required, the higher the latency.
+
+## Linearizability
+
+The strongest model. Every operation appears to take effect atomically at some point between its invocation and response. From a client's perspective, the system looks like a single machine, even if it's spread across a datacenter.
+
+```python
+# A linearizable counter — every increment is visible
+# to all readers immediately after the write completes
+counter.increment()  # returns 1
+counter.get()        # any concurrent reader sees >= 1
+```
+
+This is what most people mean when they say "strong consistency." It's what etcd, Zookeeper, and Spanner provide. The cost: every write must be acknowledged by a quorum before the call returns.
+
+## Sequential consistency
+
+Weaker than linearizability. Operations from each process appear in the order that process issued them, and all processes agree on a single global ordering — but that ordering doesn't need to match real-time.
+
+Useful for caches and CPUs. Not suitable for systems where wall-clock ordering matters (banking, stock trading).
+
+## Causal consistency
+
+Weaker still. Operations that are causally related are seen in causal order by all processes. Concurrent operations (no causal link) may be seen in different orders by different nodes.
+
+This is the sweet spot for many distributed databases. [Dynamo](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) and Cassandra operate here by default.
+
+```
+Process A: write(x = 1) → write(y = 2)   # y depends on x
+Process B: read(y = 2) → must see x = 1  # causal dependency honored
+Process C: read(x) or read(y) in any order # no causal link to A
+```
+
+## The practical tradeoff
+
+CAP theorem tells you that in the presence of a network partition, you choose CP (linearizability, may reject writes) or AP (availability, may serve stale reads). In practice, partitions are rare but latency is constant — so the real tradeoff is latency vs. staleness tolerance.
+
+If your feature can tolerate reading data that's 100ms stale, causal or eventual consistency gives you dramatically better tail latencies. If it can't (user sees their own write), you need at least read-your-writes, which most systems can provide cheaply.

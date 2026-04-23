@@ -1,0 +1,46 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const links = [
+  { href: '/posts', label: 'Writing' },
+  { href: '/about',  label: 'About'   },
+  { href: '/now',    label: 'Now'     },
+];
+
+const pathname = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm dark:bg-neutral-950/90">
+  <nav
+    class="mx-auto flex max-w-[68ch] items-center justify-between px-6 py-4"
+    aria-label="Main navigation"
+  >
+    <a
+      href="/"
+      class="font-sans text-sm font-semibold text-neutral-900 dark:text-neutral-100 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors duration-150"
+    >
+      Shivam Jari
+    </a>
+
+    <div class="flex items-center gap-1">
+      {links.map(({ href, label }) => {
+        const isActive = pathname === href || pathname.startsWith(href + '/');
+        return (
+          <a
+            href={href}
+            class:list={[
+              'rounded px-2.5 py-1.5 font-sans text-sm transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500',
+              isActive
+                ? 'text-terracotta-600 dark:text-terracotta-400 font-medium'
+                : 'text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100',
+            ]}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        );
+      })}
+      <ThemeToggle />
+    </div>
+  </nav>
+</header>

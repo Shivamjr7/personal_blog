@@ -1,0 +1,70 @@
+---
+title: "Evals are underrated"
+description: "Why evaluation harnesses are the highest-leverage investment you can make in an LLM-powered product, and how to build one that doesn't rot."
+publishedAt: 2026-04-18
+category: "ai-engineering"
+tags: ["llm", "evals", "agents", "reliability"]
+draft: false
+---
+
+Most teams building on top of LLMs spend 80% of their time on prompts and 0% on evals. That's backwards.
+
+A prompt without an eval harness is a guess. You change something, it feels better in your three test cases, you ship it, and three weeks later a user reports that the thing it used to do reliably now doesn't. You have no idea when it broke or why.
+
+## What an eval harness actually is
+
+An eval is a function:
+
+```typescript
+type Eval = (input: Input) => Promise<{ pass: boolean; score?: number; reason?: string }>;
+```
+
+You run it over a dataset of inputs you care about, and you get a signal: did this change make things better or worse? That's it. The machinery around it — test runners, CI integration, dashboards — is scaffolding. The core is just: *input → judgment*.
+
+The judgment can come from:
+
+- **Deterministic checks** — does the output contain X? Is the JSON valid? Does it parse to the right schema?
+- **Heuristics** — word count, latency, refusal rate.
+- **LLM-as-judge** — a second model grades the output against a rubric.
+
+The mistake people make is waiting for LLM-as-judge before starting. Start with deterministic checks. They're fast, cheap, and will catch 60% of regressions.
+
+## The dataset is the moat
+
+Your eval is only as good as your dataset. A dataset of three hand-crafted examples tells you almost nothing. A dataset of 200 real production inputs — sanitized and labeled — tells you a lot.
+
+The way to build this:
+
+1. Log every input/output pair in production (with user consent).
+2. Sample 50–100 per week and manually label them: did this go well?
+3. Track your labels in a spreadsheet or a simple SQLite table. Don't over-engineer the tooling.
+
+After a month you have 200+ labeled examples. Run your eval suite on every PR. Flag regressions before they ship.
+
+## CI integration
+
+```yaml
+# .github/workflows/evals.yml
+- name: Run eval suite
+  run: pnpm eval
+  env:
+    ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+Keep the suite under 2 minutes. If it's slower, it won't get run. Parallelize aggressively — most evals are embarrassingly parallel.
+
+## What good looks like
+
+A mature eval setup for an LLM-powered feature looks like:
+
+- **~200 labeled examples** covering the happy path, edge cases, and known failure modes.
+- **A score above 90%** on deterministic checks (format, schema, refusals).
+- **A score above 80%** on LLM-as-judge for quality.
+- **A CI step** that blocks merge if score drops more than 3 points from baseline.
+- **A weekly review** of new failures — this is where you learn what the model is bad at.
+
+The number isn't the point. The trend is.
+
+---
+
+Evals aren't glamorous. They don't make for good demos. But every production LLM system I've seen break in embarrassing ways broke because someone changed a prompt without running evals. The discipline pays for itself in the first incident it prevents.

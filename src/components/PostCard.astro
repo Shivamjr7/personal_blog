@@ -1,0 +1,41 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { readingTime } from '../lib/reading-time';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const slug = post.id.replace(/\.mdx?$/, '');
+const mins = readingTime(post.body ?? '');
+---
+
+<li>
+  <div class="mb-1.5 flex flex-wrap items-center gap-2.5 font-sans text-sm text-neutral-400 dark:text-neutral-500">
+    <time datetime={post.data.publishedAt.toISOString()}>
+      {post.data.publishedAt.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })}
+    </time>
+    <span aria-hidden>·</span>
+    <span>{mins} min read</span>
+    <span aria-hidden>·</span>
+    <a
+      href={`/categories/${post.data.category}`}
+      class="text-terracotta-600 dark:text-terracotta-400 hover:underline underline-offset-2"
+    >
+      {post.data.category}
+    </a>
+  </div>
+  <a href={`/posts/${slug}`} class="group block">
+    <h3 class="font-sans text-lg font-semibold text-neutral-900 dark:text-neutral-100 group-hover:text-terracotta-600 dark:group-hover:text-terracotta-400 transition-colors duration-150">
+      {post.data.title}
+    </h3>
+    <p class="mt-1 font-serif text-[0.9375rem] leading-relaxed text-neutral-500 dark:text-neutral-400">
+      {post.data.description}
+    </p>
+  </a>
+</li>

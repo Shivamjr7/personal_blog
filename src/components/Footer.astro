@@ -1,0 +1,41 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-neutral-100 dark:border-neutral-800">
+  <div class="mx-auto flex max-w-[68ch] items-center justify-between px-6 py-6 font-sans text-xs text-neutral-400 dark:text-neutral-500">
+    <span>© {year} Shivam Jari</span>
+    <nav aria-label="Footer navigation" class="flex items-center gap-4">
+      <a
+        href="https://github.com/shivamjari"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
+      >
+        GitHub
+      </a>
+      <a
+        href="/rss.xml"
+        aria-label="RSS feed"
+        class="transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M4 11a9 9 0 0 1 9 9" />
+          <path d="M4 4a16 16 0 0 1 16 16" />
+          <circle cx="5" cy="19" r="1" />
+        </svg>
+      </a>
+    </nav>
+  </div>
+</footer>

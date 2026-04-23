@@ -1,9 +1,11 @@
 ---
-layout: ../../layouts/ProseLayout.astro
 title: "Hello, World"
+description: "The obligatory first post — a proof of concept for the Astro 6 + MDX + Shiki pipeline. If you're reading this, the stack is working."
+publishedAt: 2026-04-22
+category: "meta"
+tags: ["astro", "shiki", "tailwind"]
+draft: false
 ---
-
-# Hello, World
 
 This is the first post — a proof of concept for the typography and syntax highlighting setup. If you're reading this, the Astro + MDX + Shiki pipeline is working.
 
@@ -46,26 +48,20 @@ function formatDate(date: Date): string {
     day: "numeric",
   });
 }
-
-// Type guard
-function isDraft(post: Post): boolean {
-  return post.draft === true;
-}
 ```
 
-A shell example, to confirm multi-language support:
+A shell example to confirm multi-language support:
 
 ```sh
-# Install deps and start the dev server
 pnpm install
 pnpm dev
 ```
 
 ## Typography
 
-Body text is set in Charter — a screen-optimized serif designed by Matthew Carter. It belongs in the same lineage as Georgia but renders better at medium sizes. Headings use Inter (sans-serif) to create contrast between navigation and prose.
+Body text is set in Charter — a screen-optimized serif designed by Matthew Carter. Headings use Inter to create contrast between navigation chrome and prose.
 
-The measure (line length) is capped at `68ch` — wide enough for comfortable reading, narrow enough that your eye doesn't drift searching for the next line.
+The measure is capped at `68ch` — wide enough for comfortable reading, narrow enough that your eye doesn't drift searching for the next line.
 
 > Good typography is invisible. The reader should be aware of the words, not the type.
 

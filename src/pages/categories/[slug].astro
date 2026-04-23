@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import { CATEGORIES } from '../../content/categories';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+
+export async function getStaticPaths() {
+  return CATEGORIES.map(cat => ({ params: { slug: cat.slug } }));
+}
+
+const { slug } = Astro.params;
+const category = CATEGORIES.find(c => c.slug === slug)!;
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft && data.category === slug))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+
+<BaseLayout
+  title={`${category.name} — Shivam Jari`}
+  description={category.description}
+>
+  <div class="mx-auto max-w-[68ch] px-6 py-16">
+
+    <header class="mb-12">
+      <a href="/categories" class="font-sans text-sm text-neutral-400 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors">← Categories</a>
+      <h1 class="mt-4 font-sans text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+        {category.name}
+      </h1>
+      <p class="mt-2 font-serif text-neutral-500 dark:text-neutral-400">
+        {category.description}
+      </p>
+    </header>
+
+    {posts.length > 0 ? (
+      <ul class="space-y-10">
+        {posts.map(post => <PostCard post={post} />)}
+      </ul>
+    ) : (
+      <p class="font-serif text-neutral-400 dark:text-neutral-500">No posts yet.</p>
+    )}
+
+  </div>
+</BaseLayout>

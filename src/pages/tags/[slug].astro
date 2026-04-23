@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+  const tags = [...new Set(allPosts.flatMap(p => p.data.tags))];
+  return tags.map(tag => ({ params: { slug: tag } }));
+}
+
+const { slug } = Astro.params;
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft && data.tags.includes(slug)))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+
+<BaseLayout
+  title={`#${slug} — Shivam Jari`}
+  description={`Posts tagged "${slug}".`}
+>
+  <div class="mx-auto max-w-[68ch] px-6 py-16">
+
+    <header class="mb-12">
+      <a href="/" class="font-sans text-sm text-neutral-400 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors">← Home</a>
+      <h1 class="mt-4 font-sans text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+        #{slug}
+      </h1>
+      <p class="mt-2 font-sans text-sm text-neutral-400 dark:text-neutral-500">
+        {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+      </p>
+    </header>
+
+    <ul class="space-y-10">
+      {posts.map(post => <PostCard post={post} />)}
+    </ul>
+
+  </div>
+</BaseLayout>
