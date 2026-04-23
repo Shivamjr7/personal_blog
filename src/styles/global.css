@@ -1,0 +1,52 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* Fonts */
+  --font-sans: "Inter Variable", Inter, system-ui, sans-serif;
+  /* Charter is a macOS system font; woff2 for production goes in /public/fonts/ */
+  --font-serif: Charter, "Bitstream Charter", Georgia, serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", "Fira Code", monospace;
+
+  /* Terracotta accent scale — use sparingly (links, active nav, occasional accents) */
+  --color-terracotta-50: #fdf3f0;
+  --color-terracotta-100: #fadfd7;
+  --color-terracotta-200: #f3bcad;
+  --color-terracotta-300: #e8977f;
+  --color-terracotta-400: #d6705a;
+  --color-terracotta-500: #b8543a;
+  --color-terracotta-600: #943f2a;
+  --color-terracotta-700: #732f1e;
+  --color-terracotta-800: #562213;
+  --color-terracotta-900: #3c170d;
+  --color-terracotta-950: #270d07;
+}
+
+/* ─── Shiki dual-theme ─────────────────────────────────────────────────────── */
+/* Astro 6 applies light-theme token colors as direct `color:` inline styles   */
+/* on each span — do NOT override those. Dark-theme colors are CSS variables   */
+/* (--shiki-dark) that we activate by overriding color to var(--shiki-dark).   */
+/* CSS custom properties inherit, so spans without an explicit --shiki-dark    */
+/* fall back to the one defined on the parent <pre>.                           */
+
+@media (prefers-color-scheme: dark) {
+  .astro-code {
+    background-color: var(--shiki-dark-bg) !important;
+    color: var(--shiki-dark) !important;
+  }
+  .astro-code span {
+    color: var(--shiki-dark) !important;
+  }
+}
+
+/* Placeholder for Slice 3's manual dark-mode toggle (.dark on <html>) */
+.dark .astro-code {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+}
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+}

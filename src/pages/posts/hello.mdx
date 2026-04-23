@@ -1,0 +1,72 @@
+---
+layout: ../../layouts/ProseLayout.astro
+title: "Hello, World"
+---
+
+# Hello, World
+
+This is the first post — a proof of concept for the typography and syntax highlighting setup. If you're reading this, the Astro + MDX + Shiki pipeline is working.
+
+## Syntax highlighting
+
+The code blocks below are rendered by Shiki with dual themes: `github-light` in light mode, `github-dark` in dark mode. Change your system color scheme to test both.
+
+```js
+// Async data fetching with error handling
+async function getPosts(limit = 5) {
+  const res = await fetch(`/api/posts?limit=${limit}`);
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+  }
+
+  return res.json();
+}
+
+const recent = await getPosts();
+console.log(recent.map(p => p.title));
+```
+
+Keywords, strings, comments, and numbers should each render in distinct colors. Here is the same structure in TypeScript:
+
+```ts
+interface Post {
+  slug: string;
+  title: string;
+  publishedAt: Date;
+  category: "ai-engineering" | "systems" | "notes" | "meta";
+  tags: string[];
+  draft: boolean;
+}
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+// Type guard
+function isDraft(post: Post): boolean {
+  return post.draft === true;
+}
+```
+
+A shell example, to confirm multi-language support:
+
+```sh
+# Install deps and start the dev server
+pnpm install
+pnpm dev
+```
+
+## Typography
+
+Body text is set in Charter — a screen-optimized serif designed by Matthew Carter. It belongs in the same lineage as Georgia but renders better at medium sizes. Headings use Inter (sans-serif) to create contrast between navigation and prose.
+
+The measure (line length) is capped at `68ch` — wide enough for comfortable reading, narrow enough that your eye doesn't drift searching for the next line.
+
+> Good typography is invisible. The reader should be aware of the words, not the type.
+
+That's the target.
