@@ -8,6 +8,13 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        // Pagefind generates /pagefind/pagefind.js at build-time (post-astro-build).
+        // Keep it out of the Rollup graph.
+        external: [/^\/pagefind\//],
+      },
+    },
   },
   markdown: {
     shikiConfig: {

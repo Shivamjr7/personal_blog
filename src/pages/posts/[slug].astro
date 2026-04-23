@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import { readingTime } from '../../lib/reading-time';
 import ProseLayout from '../../layouts/ProseLayout.astro';
+import { CATEGORIES } from '../../content/categories';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
@@ -21,6 +22,7 @@ const formattedDate = entry.data.publishedAt.toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
 });
+const categoryName = CATEGORIES.find(c => c.slug === entry.data.category)?.name ?? entry.data.category;
 
 const ogImage = `/og/${slug}.png`;
 const canonical = new URL(`/posts/${slug}/`, Astro.site).toString();
@@ -63,31 +65,48 @@ const jsonLd = {
 
   <div slot="header" class="mb-10 font-sans">
     <a href="/posts" class="text-sm text-neutral-400 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors">← Writing</a>
-    <h1 class="mt-4 text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">{entry.data.title}</h1>
+    <h1
+      class="mt-4 text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100"
+      data-pagefind-meta="title"
+    >
+      {entry.data.title}
+    </h1>
     <div class="mt-3 flex flex-wrap items-center gap-3 text-sm text-neutral-400 dark:text-neutral-500">
-      <time datetime={entry.data.publishedAt.toISOString()}>{formattedDate}</time>
+      <time
+        datetime={entry.data.publishedAt.toISOString()}
+        data-pagefind-meta="date[datetime]"
+      >
+        {formattedDate}
+      </time>
       <span aria-hidden>·</span>
       <span>{mins} min read</span>
       <span aria-hidden>·</span>
       <a
         href={`/categories/${entry.data.category}`}
         class="text-terracotta-600 dark:text-terracotta-400 hover:underline underline-offset-2"
+        data-pagefind-meta="category"
+        data-pagefind-filter="category"
       >
-        {entry.data.category}
+        {categoryName}
       </a>
     </div>
+    <span class="sr-only" data-pagefind-meta="description">{entry.data.description}</span>
     {entry.data.tags.length > 0 && (
       <div class="mt-3 flex flex-wrap gap-2">
         {entry.data.tags.map(tag => (
           <a
             href={`/tags/${tag}`}
             class="rounded bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs text-neutral-400 dark:text-neutral-500 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors"
+            data-pagefind-filter="tag"
           >
             {tag}
           </a>
         ))}
+        <span class="sr-only" data-pagefind-meta="tags">{entry.data.tags.join(' ')}</span>
       </div>
     )}
   </div>
-  <Content />
+  <article data-pagefind-body>
+    <Content />
+  </article>
 </ProseLayout>
