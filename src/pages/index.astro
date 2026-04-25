@@ -2,9 +2,15 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
+import SectionLabel from '../components/SectionLabel.astro';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+const allBooks = await getCollection('books');
+const sortedBooks = allBooks.sort((a, b) => b.data.readAt.getTime() - a.data.readAt.getTime());
+const featured = sortedBooks.filter(b => b.data.featured);
+const bookshelfPreview = (featured.length > 0 ? featured : sortedBooks).slice(0, 3);
 ---
 
 <BaseLayout title="Shivam Jari" description="Writing about AI engineering, distributed systems, and developer tooling.">
@@ -19,14 +25,40 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft))
       </p>
     </header>
 
-    <section>
-      <h2 class="mb-6 text-xs font-sans font-semibold uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
-        Posts
-      </h2>
+    <section class="mb-16">
+      <SectionLabel>Blogs</SectionLabel>
       <ul class="space-y-10">
         {posts.map(post => <PostCard post={post} />)}
       </ul>
     </section>
+
+    {bookshelfPreview.length > 0 && (
+      <section>
+        <SectionLabel>Bookshelf</SectionLabel>
+        <ul class="space-y-6">
+          {bookshelfPreview.map(book => (
+            <li>
+              <h3 class="font-sans text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                {book.data.title}<span class="font-normal text-neutral-400 dark:text-neutral-500"> — {book.data.author}</span>
+              </h3>
+              {book.data.notes && (
+                <p class="mt-1 font-serif text-[0.9375rem] leading-relaxed text-neutral-500 dark:text-neutral-400">
+                  {book.data.notes}
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+        <div class="mt-6 text-right">
+          <a
+            href="/bookshelf"
+            class="font-sans text-sm text-terracotta-600 hover:underline underline-offset-2 dark:text-terracotta-400"
+          >
+            Full bookshelf →
+          </a>
+        </div>
+      </section>
+    )}
 
   </div>
 </BaseLayout>

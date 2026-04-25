@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+);
+
+const years = [...new Set(posts.map(p => p.data.publishedAt.getFullYear()))];
+const groupByYear = years.length > 1;
+
+const grouped = groupByYear
+  ? years.map(year => ({
+      year,
+      entries: posts.filter(p => p.data.publishedAt.getFullYear() === year),
+    }))
+  : [{ year: null as number | null, entries: posts }];
+---
+
+<BaseLayout
+  title="Blogs — Shivam Jari"
+  description="All posts, newest first."
+>
+  <div class="mx-auto max-w-[68ch] px-6 py-16">
+    <header class="mb-12">
+      <h1 class="font-sans text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+        Blogs
+      </h1>
+    </header>
+
+    {grouped.map(group => (
+      <section class="mb-10">
+        {group.year !== null && (
+          <h2 class="mb-4 font-sans text-xs font-semibold uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+            {group.year}
+          </h2>
+        )}
+        <ul>
+          {group.entries.map(post => {
+            const slug = post.id.replace(/\.mdx?$/, '');
+            const date = post.data.publishedAt.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: '2-digit',
+            });
+            return (
+              <li class="flex items-baseline gap-3 py-1.5 font-sans text-[15px]">
+                <time
+                  datetime={post.data.publishedAt.toISOString()}
+                  class="shrink-0 tabular-nums text-neutral-400 dark:text-neutral-500"
+                >
+                  {date}
+                </time>
+                <span aria-hidden class="shrink-0 text-neutral-300 dark:text-neutral-700">:</span>
+                <a
+                  href={`/blogs/${slug}`}
+                  class="text-neutral-900 hover:text-terracotta-600 dark:text-neutral-100 dark:hover:text-terracotta-400 transition-colors"
+                >
+                  {post.data.title}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+  </div>
+</BaseLayout>

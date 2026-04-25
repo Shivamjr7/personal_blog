@@ -6,6 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://shivam.blog',
   integrations: [mdx(), sitemap()],
+  redirects: {
+    '/posts': '/blogs',
+    '/posts/[slug]': '/blogs/[slug]',
+  },
   vite: {
     plugins: [tailwindcss()],
     build: {

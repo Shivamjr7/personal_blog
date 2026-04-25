@@ -25,7 +25,7 @@ const formattedDate = entry.data.publishedAt.toLocaleDateString('en-US', {
 const categoryName = CATEGORIES.find(c => c.slug === entry.data.category)?.name ?? entry.data.category;
 
 const ogImage = `/og/${slug}.png`;
-const canonical = new URL(`/posts/${slug}/`, Astro.site).toString();
+const canonical = new URL(`/blogs/${slug}/`, Astro.site).toString();
 const ogImageUrl = new URL(ogImage, Astro.site).toString();
 
 const jsonLd = {
@@ -64,7 +64,7 @@ const jsonLd = {
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 
   <div slot="header" class="mb-10 font-sans">
-    <a href="/posts" class="text-sm text-neutral-400 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors">← Writing</a>
+    <a href="/blogs" class="text-sm text-neutral-400 hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors">← Blogs</a>
     <h1
       class="mt-4 text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100"
       data-pagefind-meta="title"

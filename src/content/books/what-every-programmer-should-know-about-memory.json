@@ -1,0 +1,7 @@
+{
+  "title": "What Every Programmer Should Know About Memory",
+  "author": "Ulrich Drepper",
+  "readAt": "2026-02-20",
+  "category": "tech",
+  "notes": "A 2007 paper that's more relevant than most 2025 blog posts. Caching intuition for anyone writing performance-sensitive code."
+}

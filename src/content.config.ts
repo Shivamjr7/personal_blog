@@ -18,4 +18,20 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { posts };
+const books = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/books' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      author: z.string(),
+      readAt: z.coerce.date(),
+      rating: z.number().int().min(1).max(5).optional(),
+      notes: z.string().optional(),
+      coverImage: image().optional(),
+      url: z.string().url().optional(),
+      category: z.enum(['tech', 'fiction', 'non-fiction', 'business', 'other']),
+      featured: z.boolean().default(false),
+    }),
+});
+
+export const collections = { posts, books };

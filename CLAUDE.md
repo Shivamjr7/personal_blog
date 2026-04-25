@@ -30,3 +30,5 @@ Accent: terracotta, starting around #B8543A. Generate a full 50–950 Tailwind s
 Once you've confirmed the Astro version, update PLAN.md section 3, then proceed with Slice 1.
 
 Execute Slice 1 : scaffold the Astro project with TypeScript strict mode, install MDX + Tailwind + Shiki + the dependencies from your plan, and make a single hardcoded post at /posts/hello render with proper typography and syntax-highlighted code blocks (include a JavaScript example to verify Shiki works). Use Shiki dual-theme so it works in both light and dark. Stop after that — no homepage, no global layout yet. Run pnpm dev and tell me what to look at in the browser.
+
+
